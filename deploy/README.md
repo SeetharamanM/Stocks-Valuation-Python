@@ -33,16 +33,33 @@ Then trust the host once, so the first clone does not stall on a prompt:
 sudo -u deepval bash -c 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
 ```
 
+Verify before going further — anything other than a successful authentication
+here means the public key is not registered yet:
+
+```bash
+sudo -u deepval ssh -T git@github.com
+```
+
 Pass the SSH URL, not the HTTPS one, on first run.
 
 ## First run
 
+This script lives inside the repository it clones, so the first run needs a
+throwaway copy to bootstrap from. Clone it **as `deepval`** — your own account
+does not hold the deploy key, and cloning as yourself fails with
+`Permission denied (publickey)`:
+
 ```bash
-sudo bash ./deploy/deploy.sh git@github.com:SeetharamanM/Stocks-Valuation-Python.git
+sudo -u deepval git clone git@github.com:SeetharamanM/Stocks-Valuation-Python.git /tmp/dv
+```
+
+```bash
+sudo bash /tmp/dv/deploy/deploy.sh git@github.com:SeetharamanM/Stocks-Valuation-Python.git
 ```
 
 Creates a `deepval` service account, clones into `/opt/deepval/app`, builds a
 venv, installs `deepval.service` and starts gunicorn on `127.0.0.1:8010`.
+Subsequent runs use `/opt/deepval/app/deploy/deploy.sh` directly.
 
 Then publish it on the tailnet — Tailscale terminates TLS itself, so there is
 no certificate to obtain and nothing to renew:
