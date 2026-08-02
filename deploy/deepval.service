@@ -1,0 +1,32 @@
+[Unit]
+Description=Deep Valuation
+After=network.target
+
+[Service]
+User=deepval
+Group=deepval
+
+# The app writes to "uploads" and "outputs" as *relative* paths (app.py), so
+# the working directory is load-bearing, not cosmetic.
+WorkingDirectory=/opt/deepval/app
+
+# app.py exposes a factory, not a module-level `app`, so the plain
+# `app:app` target does not exist. --timeout 180 because the default 30s
+# kills a worker mid-DCF or on a slow Yahoo Finance lookup.
+ExecStart=/opt/deepval/venv/bin/gunicorn \
+    --workers 3 \
+    --timeout 180 \
+    --bind 127.0.0.1:8010 \
+    'app:create_app()'
+
+Restart=always
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/deepval/app/uploads /opt/deepval/app/outputs
+
+[Install]
+WantedBy=multi-user.target
