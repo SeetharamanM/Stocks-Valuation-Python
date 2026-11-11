@@ -29,6 +29,10 @@ python app.py
 
 Opens `http://localhost:5000`.
 
+A Streamlit front-end for the same pipeline is in `streamlit_app.py`
+(`streamlit run streamlit_app.py`). The steps to host it on Streamlit Community
+Cloud, plus a personal-details checklist, are in `deploy/STREAMLIT.md`.
+
 ## What data you need
 
 **Required — the one file the report cannot be produced without:**

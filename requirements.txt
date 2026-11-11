@@ -3,3 +3,4 @@ openpyxl==3.1.5
 yfinance
 python-dotenv
 pytest
+streamlit==1.67.0
